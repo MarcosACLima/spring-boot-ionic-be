@@ -9,11 +9,11 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.marcoscl.cursomc</groupId>
-	<artifactId>cursomc</artifactId>
+	<groupId>com.marcoscl.sbibe</groupId>
+	<artifactId>SBIBE</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cursomc</name>
-	<description>Estudo de caso Java para curso de Modelagem Conceitual com UML</description>
+	<name>spring-boot-ionic-be</name>
+	<description>Cosntrução do BackEnd com Spring Boot e Ionic</description>
 
 	<properties>
 		<java.version>1.8</java.version>
