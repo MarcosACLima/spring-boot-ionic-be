@@ -1,6 +1,8 @@
 package com.marcoscl.sbibe.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.marcoscl.sbibe.domain.Categoria;
+import com.marcoscl.sbibe.dto.CategoriaDTO;
 import com.marcoscl.sbibe.services.CategoriaService;
 
 @RestController
@@ -23,9 +26,7 @@ public class CategoriaResource {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
-		
 		Categoria obj = service.buscar(id);
-				
 		return ResponseEntity.ok().body(obj);
 	}
 	
@@ -48,6 +49,14 @@ public class CategoriaResource {
 	public ResponseEntity<Categoria> excluir(@PathVariable Integer id) {
 		service.excluir(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>>listarTudo() {
+		List<Categoria> categorias  = service.listarTudo();
+		List<CategoriaDTO> categoriasDTO = categorias.stream().map(
+				categoria -> new CategoriaDTO(categoria)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(categoriasDTO);
 	}
 	
 }
