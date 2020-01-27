@@ -35,7 +35,8 @@ public class CategoriaService {
 	}
 	
 	public Categoria editar(Categoria categoria) {
-		buscar(categoria.getId());
+		Categoria novaCategoria = buscar(categoria.getId());
+		atualizarDados(novaCategoria, categoria);
 		return repo.save(categoria);
 	}
 
@@ -62,6 +63,10 @@ public class CategoriaService {
 	public Categoria apartirDTO(CategoriaDTO categoriaDTO) {
 		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
 	}
-		
+
+	private void atualizarDados(Categoria novaCategoria, Categoria categoria) {
+		novaCategoria.setNome(categoria.getNome());
+	}
+	
 }
 	
