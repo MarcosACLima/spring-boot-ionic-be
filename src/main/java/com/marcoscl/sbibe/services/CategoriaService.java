@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.marcoscl.sbibe.domain.Categoria;
+import com.marcoscl.sbibe.dto.CategoriaDTO;
 import com.marcoscl.sbibe.repositories.CategoriaRepository;
 import com.marcoscl.sbibe.services.exceptions.DataIntegrityException;
 import com.marcoscl.sbibe.services.exceptions.ObjectNotFoundException;
@@ -56,6 +57,10 @@ public class CategoriaService {
 	public Page<Categoria> buscarPagina(Integer pagina, Integer quantLinhas, String ordenacao, String direcao) {
 		PageRequest pageRequest = PageRequest.of(pagina, quantLinhas, Direction.valueOf(direcao), ordenacao);
 		return repo.findAll(pageRequest);
+	}
+	
+	public Categoria apartirDTO(CategoriaDTO categoriaDTO) {
+		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
 	}
 		
 }
