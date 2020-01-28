@@ -1,5 +1,6 @@
 package com.marcoscl.sbibe.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.marcoscl.sbibe.domain.Cliente;
 import com.marcoscl.sbibe.dto.ClienteDTO;
+import com.marcoscl.sbibe.dto.ClienteNovoDTO;
 import com.marcoscl.sbibe.services.ClienteService;
 
 @RestController
@@ -32,6 +35,15 @@ public class ClienteResource {
 		Cliente obj = service.buscar(id);
 				
 		return ResponseEntity.ok().body(obj);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> inserir(@Valid @RequestBody ClienteNovoDTO clienteNovoDTO) {
+		Cliente cliente = service.apartirDTO(clienteNovoDTO);
+		cliente = service.inserir(cliente);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(cliente.getId()).toUri();
+		return ResponseEntity.created(uri).build();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
