@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.marcoscl.sbibe.services.BDService;
+import com.marcoscl.sbibe.services.EmailService;
+import com.marcoscl.sbibe.services.MockEmailService;
 
 @Configuration
 @Profile("test")
@@ -20,6 +22,11 @@ public class TesteConfig {
 	public boolean instanciarBancoDado() throws ParseException {
 		bdService.instanciarTesteBancoDado();
 		return true;
+	}
+	
+	@Bean
+	public EmailService emailService() {
+		return new MockEmailService();
 	}
 
 }
