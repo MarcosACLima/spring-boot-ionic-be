@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.marcoscl.sbibe.services.BDService;
+import com.marcoscl.sbibe.services.EmailService;
+import com.marcoscl.sbibe.services.SmtpEmailService;
 
 @Configuration
 @Profile("dev")
@@ -30,5 +32,10 @@ public class DevConfig {
 		bdService.instanciarTesteBancoDado();
 		return true;
 	}
-
+	
+	@Bean
+	public EmailService emailService() {
+		return new SmtpEmailService();
+	}
+			
 }
