@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.marcoscl.sbibe.domain.ItemPedido;
-import com.marcoscl.sbibe.domain.Pagamento;
 import com.marcoscl.sbibe.domain.PagamentoComBoleto;
 import com.marcoscl.sbibe.domain.Pedido;
 import com.marcoscl.sbibe.domain.enums.EstadoPagamento;
 import com.marcoscl.sbibe.repositories.ItemPedidoRepository;
 import com.marcoscl.sbibe.repositories.PagamentoRepository;
 import com.marcoscl.sbibe.repositories.PedidoRepository;
-import com.marcoscl.sbibe.repositories.ProdutoRepository;
 import com.marcoscl.sbibe.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -34,6 +32,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ProdutoService produtoService;
+	
+	@Autowired
+	private ClienteService clienteService;
 
 	public Pedido buscar(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
@@ -45,6 +46,7 @@ public class PedidoService {
 	public Pedido inserir(Pedido pedido) {
 		pedido.setId(null);
 		pedido.setInstante(new Date());
+		pedido.setCliente(clienteService.buscar(pedido.getCliente().getId()));
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		pedido.getPagamento().setPedido(pedido);
 		if (pedido.getPagamento() instanceof PagamentoComBoleto) {
@@ -55,10 +57,12 @@ public class PedidoService {
 		pagamentoRepository.save(pedido.getPagamento());
 		for (ItemPedido ip : pedido.getItens()) {
 			ip.setDesconto(0.0);
-			ip.setPreco(produtoService.buscar(ip.getProduto().getId()).getPreco());
+			ip.setProduto(produtoService.buscar(ip.getProduto().getId()));
+			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(pedido);
 		}
 		itemPedidoRepository.saveAll(pedido.getItens());
+		System.out.println(pedido);
 		return pedido;
 	}
 	
