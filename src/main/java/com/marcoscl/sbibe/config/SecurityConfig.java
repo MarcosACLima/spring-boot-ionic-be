@@ -25,7 +25,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] PUBLIC_MATCHERS = { "/h2-console/**" };
 
-	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
+	private static final String[] PUBLIC_MATCHERS_GET = { 
+			"/produtos/**",
+			"/categorias/**",
+			"/clientes/**"
+	};
 
 //	permiter acesso a tdos do PUBLIC_MATCHERS e pedir autenticacao para todo resto
 	@Override
