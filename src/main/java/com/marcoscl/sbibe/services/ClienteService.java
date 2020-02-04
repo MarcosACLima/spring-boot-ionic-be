@@ -15,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.marcoscl.sbibe.domain.Cidade;
 import com.marcoscl.sbibe.domain.Cliente;
 import com.marcoscl.sbibe.domain.Endereco;
+import com.marcoscl.sbibe.domain.enums.Perfil;
 import com.marcoscl.sbibe.domain.enums.TipoCliente;
 import com.marcoscl.sbibe.dto.ClienteDTO;
 import com.marcoscl.sbibe.dto.ClienteNovoDTO;
 import com.marcoscl.sbibe.repositories.ClienteRepository;
 import com.marcoscl.sbibe.repositories.EnderecoRepository;
+import com.marcoscl.sbibe.security.UsuarioSpringSecurity;
+import com.marcoscl.sbibe.services.exceptions.AuthorizationException;
 import com.marcoscl.sbibe.services.exceptions.DataIntegrityException;
 import com.marcoscl.sbibe.services.exceptions.ObjectNotFoundException;
 
@@ -36,6 +39,12 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 
 	public Cliente buscar(Integer id) {
+		
+		UsuarioSpringSecurity usuario = UsuarioService.autenticado();
+		if(usuario == null || !usuario.temPerfil(Perfil.ADMIN) && !id.equals(usuario.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException( 
 				"Objeto não encontrado!" + id + ", Tipo: " + Cliente.class.getName()
