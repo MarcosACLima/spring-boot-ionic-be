@@ -4,8 +4,12 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.marcoscl.sbibe.domain.Cliente;
 import com.marcoscl.sbibe.domain.ItemPedido;
 import com.marcoscl.sbibe.domain.PagamentoComBoleto;
 import com.marcoscl.sbibe.domain.Pedido;
@@ -13,6 +17,8 @@ import com.marcoscl.sbibe.domain.enums.EstadoPagamento;
 import com.marcoscl.sbibe.repositories.ItemPedidoRepository;
 import com.marcoscl.sbibe.repositories.PagamentoRepository;
 import com.marcoscl.sbibe.repositories.PedidoRepository;
+import com.marcoscl.sbibe.security.UsuarioSpringSecurity;
+import com.marcoscl.sbibe.services.exceptions.AuthorizationException;
 import com.marcoscl.sbibe.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -68,6 +74,17 @@ public class PedidoService {
 //		emailService.enviarEmailConfirmacao(pedido);
 		emailService.enviarHtmlEmailConfirmacao(pedido);
 		return pedido;
+	}
+	
+	public Page<Pedido> buscarPagina(Integer pagina, Integer quantLinhas, String ordenacao, String direcao) {
+		UsuarioSpringSecurity usuario = UsuarioService.autenticado();
+		if(usuario == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		PageRequest pageRequest = PageRequest.of(pagina, quantLinhas, Direction.valueOf(direcao), ordenacao);
+		Cliente cliente = clienteService.buscar(usuario.getId());
+		return repo.findByCliente(cliente, pageRequest);
 	}
 	
 }
