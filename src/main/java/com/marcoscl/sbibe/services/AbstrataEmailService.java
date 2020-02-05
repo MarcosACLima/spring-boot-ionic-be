@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.marcoscl.sbibe.domain.Cliente;
 import com.marcoscl.sbibe.domain.Pedido;
 
 public abstract class AbstrataEmailService implements EmailService {
@@ -67,6 +68,22 @@ public abstract class AbstrataEmailService implements EmailService {
 		mmh.setSentDate(new Date(System.currentTimeMillis()));
 		mmh.setText(htmlFromTemplatePedido(pedido), true);
 		return mm;
+	}
+	
+	@Override
+	public void enviarNovaSenhaPorEmail(Cliente cliente, String novaSenha) {
+		SimpleMailMessage sm = preparaNovaSenhaEmail(cliente, novaSenha);
+		enviarEmail(sm);
+	}
+
+	protected SimpleMailMessage preparaNovaSenhaEmail(Cliente cliente, String novaSenha) {
+		SimpleMailMessage sm = new SimpleMailMessage();
+		sm.setTo(cliente.getEmail());
+		sm.setFrom(remetente);
+		sm.setSubject("Solicitação de nova senha");
+		sm.setSentDate(new Date(System.currentTimeMillis()));
+		sm.setText("Nova senha: " + novaSenha);
+		return sm;
 	}
 
 }
