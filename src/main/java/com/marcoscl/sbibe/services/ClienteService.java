@@ -119,7 +119,19 @@ public class ClienteService {
 	}
 	
 	public URI uploadFotoPerfil(MultipartFile arquivoMultiPart) {
-		return s3Service.uploadArquivo(arquivoMultiPart);
+		
+		UsuarioSpringSecurity usuario = UsuarioService.autenticado();
+		if(usuario == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		URI uri =  s3Service.uploadArquivo(arquivoMultiPart);
+		
+		Cliente cliente = buscar(usuario.getId());
+		cliente.setImagemURL(uri.toString());
+		repo.save(cliente);
+		
+		return uri;
 	}
 	
 }
