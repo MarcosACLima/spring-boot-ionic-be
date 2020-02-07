@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.marcoscl.sbibe.domain.Cliente;
@@ -80,6 +81,12 @@ public class ClienteResource {
 		Page<Cliente> clientes  = service.buscarPagina(pagina, quantLinhas, ordenacao, direcao);
 		Page<ClienteDTO> clientesDTO = clientes.map(cliente -> new ClienteDTO(cliente));
 		return ResponseEntity.ok().body(clientesDTO);
+	}
+	
+	@RequestMapping(value = "/foto", method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadFotoPerfil(@RequestParam(name = "arquivo") MultipartFile arquivo) {
+		URI uri = service.uploadFotoPerfil(arquivo);
+		return ResponseEntity.created(uri).build();
 	}
 	
 }
