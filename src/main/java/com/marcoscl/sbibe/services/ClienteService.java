@@ -96,6 +96,19 @@ public class ClienteService {
 		return repo.findAll();
 	}
 	
+	public Cliente buscarPorEmail(String email) {
+		UsuarioSpringSecurity usuario = UsuarioService.autenticado();
+		if (usuario == null || !usuario.temPerfil(Perfil.ADMIN) && !email.equals(usuario.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		Cliente cliente = repo.findByEmail(email);
+		if(cliente == null) {
+			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + usuario.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return cliente;
+	}
+	
 	public Page<Cliente> buscarPagina(Integer pagina, Integer quantLinhas, String ordenacao, String direcao) {
 		PageRequest pageRequest = PageRequest.of(pagina, quantLinhas, Direction.valueOf(direcao), ordenacao);
 		return repo.findAll(pageRequest);
