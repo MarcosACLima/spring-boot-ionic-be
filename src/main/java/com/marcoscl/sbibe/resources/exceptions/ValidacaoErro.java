@@ -8,9 +8,9 @@ public class ValidacaoErro extends StandardError {
 	private static final long serialVersionUID = 1L;
 	
 	private List<CampoMensagem> erros = new ArrayList<>();
-
-	public ValidacaoErro(Integer status, String msg, Long timeStamp) {
-		super(status, msg, timeStamp);
+	
+	public ValidacaoErro(Long timeStamp, Integer status, String erro, String mensagem, String caminho) {
+		super(timeStamp, status, erro, mensagem, caminho);
 	}
 
 	public List<CampoMensagem> getErros() {
