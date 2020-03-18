@@ -22,6 +22,10 @@ import com.marcoscl.sbibe.domain.Categoria;
 import com.marcoscl.sbibe.dto.CategoriaDTO;
 import com.marcoscl.sbibe.services.CategoriaService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping(value = "/categorias")
 public class CategoriaResource {
@@ -29,12 +33,15 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService service;
 	
+//	Descrições personalizadas para os endpoints
+	@ApiOperation(value = "Buscar por id")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
 		Categoria obj = service.buscar(id);
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	@ApiOperation(value = "Insere nova categoria")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> inserir(@Valid @RequestBody CategoriaDTO categoriaDTO) {
@@ -45,6 +52,7 @@ public class CategoriaResource {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@ApiOperation(value = "Atualiza categoria")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> editar(@Valid @RequestBody CategoriaDTO categoriaDTO, @PathVariable Integer id){
@@ -54,13 +62,19 @@ public class CategoriaResource {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@ApiOperation(value = "Remove categoria")
 	@PreAuthorize("hasAnyRole('ADMIN')")
+//	Mensagens de resposta específicas
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "Não é possível excluir uma categoria que possui produtos"),
+			@ApiResponse(code = 404, message = "Código inexistente") })
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Categoria> excluir(@PathVariable Integer id) {
 		service.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 	
+	@ApiOperation(value = "Retorna todas categorias")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<CategoriaDTO>> listarTudo() {
 		List<Categoria> categorias  = service.listarTudo();
@@ -69,6 +83,7 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(categoriasDTO);
 	}
 	
+	@ApiOperation(value = "Retorna todas categorias com paginação")
 	@RequestMapping(value = "/pagina", method = RequestMethod.GET)
 	public ResponseEntity<Page<CategoriaDTO>> buscarPagina(		
 			@RequestParam(value = "pagina", defaultValue = "0") Integer pagina, 
