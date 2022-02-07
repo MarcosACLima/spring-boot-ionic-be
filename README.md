@@ -26,6 +26,7 @@ Projeto permite realizar login, cadastro de usuário, fluxo completo de atividad
 - JWT (Json Web Token)
 - Heroku
 - Postman
+- Swagger (SpringFox do Swagger para documentação)
 
 ## IDE
 - Spring Tool Suite
